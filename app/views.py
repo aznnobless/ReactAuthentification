@@ -1,16 +1,22 @@
 '''
 ROUTER
 '''
+import time
+import json
+import jwt #pyjwt
+import base64
+import os
+
+from datetime import datetime, timedelta
 
 from flask import render_template, request, flash, redirect, session, url_for, jsonify, Response
 from flask.ext.restful import Api, Resource, reqparse, fields, marshal
+from flask.ext.api import status
+from flask.ext.cors import cross_origin
 from sqlalchemy.sql.expression import func
 from app import app, db, api
 from app.models import Post, User
-import time
-import datetime
-import json
-import jwt #pyjwt
+
 
 app.secret_key = "techempower"
 
@@ -31,17 +37,19 @@ app.secret_key = "techempower"
 def index():
   return render_template("index.html")
 
-@app.route('/posts', methods=['GET'])
-def newPostPage():
-  return render_template("index.html")
-
-@app.route('/about', methods=['GET'])
-def aboutPage():
-  return render_template("index.html")
-
 @app.route('/login', methods=['GET'])
 def loginPage():
   return render_template("index.html")
+
+
+# @app.route('/posts', methods=['GET'])
+# def newPostPage():
+#   return render_template("index.html")
+
+# @app.route('/about', methods=['GET'])
+# def aboutPage():
+#   return render_template("index.html")
+
 
 '''
   JWT Authentication
@@ -49,29 +57,47 @@ def loginPage():
 
 ### Generate a JWT and return it
 def createToken(user):
-  encode = jwt.encode({"username":user.username}, 'secret', algorithm='HS256')
-  print("***********")
-  print(encode)
-  print("***********")
-  return encode
+
+  payload = {
+    "username":user.username,
+    "iat": datetime.utcnow(),
+    "exp": datetime.utcnow() + timedelta(seconds=30)
+  }
+
+  token = jwt.encode( payload,'secret', algorithm='HS256')
+  print("****TOKEN*******")
+  print(token)
+  print("****TOKEN DECODE*******")
+  print(token.decode('unicode_escape'))
+  return token.decode('unicode_escape')
 
 @app.route('/sessions/create', methods=['POST'])
 def jwtAuth():
   
   print("JWT AUTH DEBUG")
   
-  username = request.form.get("username");
-  password = request.form.get("password");
+  username = request.form.get("username")
+  password = request.form.get("password")
   
+  if not username or not password:
+    result = {
+      'result': 'false',
+      'message': 'You must send the username and password'
+    }
+    return jsonify(result), 400
   # TODO
 
   # Retrieve a user by username (Find user from db)
-  user =  User.query.filter_by(username=username).first();
+  user =  User.query.filter_by(username=username).first()
 
   # if username does not exist in DB,
   if user==None :
     print("NOT EXIST")
-    return jsonify(result = "false")
+    result = { 
+      'result' : 'false', 
+      'message' : "You must send"
+    }
+    return jsonify(result), 400
 
   # if password does not match
   if user.verify_password(password) == False:
@@ -95,8 +121,7 @@ def jwtAuth():
 
   
 
-  return jsonify(id_token = createToken(user))
-
+  return jsonify(id_token = createToken(user)), 200
 
 
 

@@ -1,9 +1,9 @@
 'use strict';
 
 import React from 'react';
-//import LoginStore from "../stores/LoginStore"
+import LoginStore from "../stores/LoginStore"
 import { Route, RouteHandler, Link} from 'react-router';
-//import AuthService from "../services/AuthService"
+import AuthService from "../services/AuthService"
 
 export default class AuthenticateApp extends React.Component {
 
@@ -16,23 +16,23 @@ export default class AuthenticateApp extends React.Component {
   // Helper method
   _getLoginState() {
     return {
-      userLoggedIn: false//LoginStore.isLoggedIn()
+      userLoggedIn: LoginStore.isLoggedIn()
     };
   }
 
-  // componentDidMount() {
-  //   this.changeListener = this._onChange.bind(this);
-  //   //LoginStore.addChangeListener(this.changeListener);
-  // }
+  componentDidMount() {
+    this.changeListener = this._onChange.bind(this);
+    LoginStore.addChangeListener(this.changeListener);
+  }
 
-  // // Helper method
-  // _onChange() {
-  //   this.setState(this._getLoginState());
-  // }
+  // Helper method
+  _onChange() {
+    this.setState(this._getLoginState());
+  }
 
-  // componentWillUnmount() {
-  //   //LoginStore.removeChangeListener(this.changeListener);
-  // }
+  componentWillUnmount() {
+    LoginStore.removeChangeListener(this.changeListener);
+  }
 
   render() {
 
@@ -51,9 +51,12 @@ export default class AuthenticateApp extends React.Component {
     );
   }
 
+  /*
+   *  Event Handler
+   */
   logout(e) {
     e.preventDefault();
-    //AuthService.logout();
+    AuthService.logout();
   }
 
   get headerItems() {
@@ -74,7 +77,7 @@ export default class AuthenticateApp extends React.Component {
       return (
         <ul className="nav navbar-nav navbar-right">
           <li>
-            <Link to="home">Home</Link>
+            <Link to="/">Home</Link>
           </li>
           <li>
             <a href="" onClick={this.logout}>Logout</a>

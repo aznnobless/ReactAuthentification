@@ -1,5 +1,5 @@
 import React from 'react';
-//import LoginStore from '../stores/LoginStore';
+import LoginStore from '../stores/LoginStore';
 
 export default (ComposedComponent) => {
   return class AuthenticatedComponent extends React.Component {
@@ -12,20 +12,20 @@ export default (ComposedComponent) => {
 
     constructor() {
       super()
-      //this.state = this._getLoginState();
+      this.state = this._getLoginState();
     }
 
     _getLoginState() {
       return {
-        // userLoggedIn: LoginStore.isLoggedIn(),
-        // user: LoginStore.user,
-        // jwt: LoginStore.jwt
+        userLoggedIn: LoginStore.isLoggedIn(),
+        user: LoginStore.user,
+        jwt: LoginStore.jwt
       };
     }
 
     componentDidMount() {
       this.changeListener = this._onChange.bind(this);
-      //LoginStore.addChangeListener(this.changeListener);
+      LoginStore.addChangeListener(this.changeListener);
     }
 
     _onChange() {
@@ -33,13 +33,20 @@ export default (ComposedComponent) => {
     }
 
     componentWillUnmount() {
-      //LoginStore.removeChangeListener(this.changeListener);
+      LoginStore.removeChangeListener(this.changeListener);
     }
 
     render() {
+      console.log("DEBUG POINT");
+      console.log("username : " + this.state.user );
+      console.log("jwt : " + this.state.jwt);
       return (
-        <h1>!!! Dummy from AuthenticatedComponent !!!</h1>
-      )
+        <ComposedComponent
+        {...this.props}
+        user={this.state.user}
+        jwt={this.state.jwt}
+        userLoggedIn={this.state.userLoggedIn} />
+      );
     }
   }
 };

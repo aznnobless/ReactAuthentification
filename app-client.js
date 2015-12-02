@@ -12,7 +12,7 @@ import Signup from "./components/Signup";
 import Home from "./components/Home";
 
 import RouterContainer from "./services/RouterContainer";
-//import LoginActions from "./actions/LoginActions";
+import LoginActions from "./actions/LoginActions";
 
 let history = createBrowserHistory();
 
@@ -34,7 +34,7 @@ RouterContainer.set(appRouter);
 let jwt = localStorage.getItem('jwt');
 if(jwt) {
   console.log("jwt exist");
-  //LoginActions.loginUser(jwt);
+  LoginActions.loginUser(jwt);
 }else {
   console.log("jwt NOT exist");
 }

@@ -1,7 +1,7 @@
 import request from "reqwest";
 import when from "when";
 import {LOGIN_URL, SIGNUP_URL} from "../constants/LoginConstants"
-//import LoginActions from "../actions/LoginActions"
+import LoginActions from "../actions/LoginActions"
 
 class AuthService {
 
@@ -20,8 +20,8 @@ class AuthService {
   }
 
   logout() {
-    // invoke logoutUser method in LoginActions 
-    //LoginActions.logoutUser();
+    // Invoke logoutUser method in LoginActions 
+    LoginActions.logoutUser();
   }
 
   // signup(username, password, extra) {
@@ -40,10 +40,13 @@ class AuthService {
     return loginPromise.then(function(response) {
       
       console.log("$$$$$$??????? IF this statment is executed that means ajax call success!");
+      
       // Retrieve JWT from response 
       var jwt = response.id_token;
       console.log("jwt : " + jwt); // DEBUG PURPOSE
-      //LoginActions.loginUser(jwt);
+
+      // store jwt
+      LoginActions.loginUser(jwt);
       return true;
     });
   }

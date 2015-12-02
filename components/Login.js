@@ -7,25 +7,27 @@ export default class Login extends React.Component {
     super();
   }
 
+  /* 
+   *  Event Handling
+   */
   login(e) {
     e.preventDefault();
-    console.log("Login button pressed");
-
+  
+    /** Retrieve username and password from view **/
     let username = this.refs.username.value.trim();
     let password = this.refs.password.value.trim();
 
-    /** DEBUG PURPOSE **/
-    console.log(username);
-    console.log(password);
-
-    /** Login auth process here **/
+    /** Invoke login in AuthService **/
     Auth.login(username, password)
       .catch(function(err) {
         alert("There's an error logging in");
         console.log("Error logging in", err);
       });
-  } 
+  }
 
+  /*
+   *  Render Login Form
+   */ 
   render() {
     return (
       <div className="login jumbotron center-block">
