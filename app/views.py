@@ -41,6 +41,10 @@ def index():
 def loginPage():
   return render_template("index.html")
 
+@app.route('/userinfo', methods=['GET'])
+def userInfoPage():
+  return render_template("index.html")
+
 
 # @app.route('/posts', methods=['GET'])
 # def newPostPage():

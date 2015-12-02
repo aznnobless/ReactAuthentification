@@ -1,12 +1,30 @@
+/*
+ *  Wrapper component called AuthenticatedComponent.
+ *  It will make suere the user is authenticated before displaying its content.
+ *  If the user isn't authenticated, it'll redirect him or her to the logi page.
+ */
 import React from 'react';
 import LoginStore from '../stores/LoginStore';
+import RouterContainer from '../services/RouterContainer'
 
 export default (ComposedComponent) => {
   return class AuthenticatedComponent extends React.Component {
 
-    static willTransitionTo(transition) {
+    /** willTransitionTo() is deprecated **/
+    // static willTransitionTo() {
+    //   if (!LoginStore.isLoggedIn()) {
+    //     var router = RouterContainer.get();
+    //     var history = router.props.history;
+    //     history.pushState(null, 'login');
+
+    //   }
+    // }
+
+    componentWillMount() {
       if (!LoginStore.isLoggedIn()) {
-        transition.redirect('/login', {}, {'nextPath' : transition.path});
+        var router = RouterContainer.get();
+        var history = router.props.history;
+        history.pushState(null, 'login');
       }
     }
 

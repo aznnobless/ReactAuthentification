@@ -4,9 +4,12 @@ import RouterContainer from '../services/RouterContainer'
 
 export default {
 
+  /*
+   *  Login Action
+   */
   loginUser: (jwt) => {
     
-    console.log("JWT WILL BE SAVED in localStorage")
+    /** To check JWT exist in local storage **/
     var savedJwt = localStorage.getItem('jwt');
     console.log("current jwt in localStorage : " + savedJwt)
 
@@ -32,6 +35,10 @@ export default {
 
     console.log("JWT saved to localStorage. + " + localStorage.getItem('jwt'));
   },
+
+  /*
+   *  Logout Action
+   */
   logoutUser: () => {
 
     var router = RouterContainer.get();
@@ -40,7 +47,9 @@ export default {
     //RouterContainer.get().transitionTo('/login'); // Deprecated. Use blow statement
     history.pushState(null, 'login');
 
+    // Remove JWT from localStorage
     localStorage.removeItem('jwt');
+
     AppDispatcher.dispatch({
       actionType: LOGOUT_USER
     });

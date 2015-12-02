@@ -44,7 +44,7 @@ export default class AuthenticateApp extends React.Component {
           </div>
           {this.headerItems}
         </nav>
-        AuthenticatedApp.js
+        
         {this.props.children}
         
       </div>

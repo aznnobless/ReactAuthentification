@@ -1,3 +1,6 @@
+/*
+ *  Login Component
+ */ 
 import React from 'react';
 import Auth from '../services/AuthService';
 

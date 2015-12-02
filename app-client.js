@@ -10,6 +10,7 @@ import AuthenticatedApp from "./components/AuthenticatedApp"
 import Login from "./components/Login";
 import Signup from "./components/Signup";
 import Home from "./components/Home";
+import UserInfo from "./components/UserInfo";
 
 import RouterContainer from "./services/RouterContainer";
 import LoginActions from "./actions/LoginActions";
@@ -23,6 +24,7 @@ var appRouter = (
       <Route path="/" component={Home}/>
       <Route path="login" component={Login}/>
       <Route path="signup" component={Signup}/>
+      <Route path="userinfo" component={UserInfo}/>
     </Route>
   </Router>
 

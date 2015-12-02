@@ -78,6 +78,10 @@
 
 	var _componentsHome2 = _interopRequireDefault(_componentsHome);
 
+	var _componentsUserInfo = __webpack_require__(253);
+
+	var _componentsUserInfo2 = _interopRequireDefault(_componentsUserInfo);
+
 	var _servicesRouterContainer = __webpack_require__(248);
 
 	var _servicesRouterContainer2 = _interopRequireDefault(_servicesRouterContainer);
@@ -96,7 +100,8 @@
 	    { component: _componentsAuthenticatedApp2["default"] },
 	    _react2["default"].createElement(_reactRouter.Route, { path: "/", component: _componentsHome2["default"] }),
 	    _react2["default"].createElement(_reactRouter.Route, { path: "login", component: _componentsLogin2["default"] }),
-	    _react2["default"].createElement(_reactRouter.Route, { path: "signup", component: _componentsSignup2["default"] })
+	    _react2["default"].createElement(_reactRouter.Route, { path: "signup", component: _componentsSignup2["default"] }),
+	    _react2["default"].createElement(_reactRouter.Route, { path: "userinfo", component: _componentsUserInfo2["default"] })
 	  )
 	);
 
@@ -25012,7 +25017,6 @@
 	          ),
 	          this.headerItems
 	        ),
-	        'AuthenticatedApp.js',
 	        this.props.children
 	      );
 	    }
@@ -25149,6 +25153,10 @@
 	          break;
 	      };
 	    }
+
+	    /*
+	     *  Getters
+	     */
 	  }, {
 	    key: "isLoggedIn",
 	    value: function isLoggedIn() {
@@ -25986,6 +25994,13 @@
 /* 224 */
 /***/ function(module, exports, __webpack_require__) {
 
+	/*
+	 *  AuthService is in charge of calling login API.
+	 *  The server will validate the username and password and return a JWT
+	 *  back to our app. Once we get it, we'll create a LoginAction and send
+	 *  it to all the Stores using the Dispatcher from Flux.
+	 */
+
 	"use strict";
 
 	Object.defineProperty(exports, "__esModule", {
@@ -26019,6 +26034,10 @@
 
 	  _createClass(AuthService, [{
 	    key: "login",
+
+	    /*
+	     *  Login Ajax call
+	     */
 	    value: function login(username, password) {
 
 	      // NOTE THIS AJAX CALL DATA IS FORM DATA
@@ -26062,7 +26081,7 @@
 	        var jwt = response.id_token;
 	        console.log("jwt : " + jwt); // DEBUG PURPOSE
 
-	        // store jwt
+	        // Trigger the LoginAction with that JWT.. store jwt
 	        _actionsLoginActions2["default"].loginUser(jwt);
 	        return true;
 	      });
@@ -29128,9 +29147,12 @@
 
 	exports['default'] = {
 
+	  /*
+	   *  Login Action
+	   */
 	  loginUser: function loginUser(jwt) {
 
-	    console.log("JWT WILL BE SAVED in localStorage");
+	    /** To check JWT exist in local storage **/
 	    var savedJwt = localStorage.getItem('jwt');
 	    console.log("current jwt in localStorage : " + savedJwt);
 
@@ -29156,6 +29178,10 @@
 
 	    console.log("JWT saved to localStorage. + " + localStorage.getItem('jwt'));
 	  },
+
+	  /*
+	   *  Logout Action
+	   */
 	  logoutUser: function logoutUser() {
 
 	    var router = _servicesRouterContainer2['default'].get();
@@ -29164,7 +29190,9 @@
 	    //RouterContainer.get().transitionTo('/login'); // Deprecated. Use blow statement
 	    history.pushState(null, 'login');
 
+	    // Remove JWT from localStorage
 	    localStorage.removeItem('jwt');
+
 	    _dispatchersAppDispatcherJs2['default'].dispatch({
 	      actionType: _constantsLoginConstantsJs.LOGOUT_USER
 	    });
@@ -29205,6 +29233,9 @@
 /* 249 */
 /***/ function(module, exports, __webpack_require__) {
 
+	/*
+	 *  Login Component
+	 */
 	'use strict';
 
 	Object.defineProperty(exports, '__esModule', {
@@ -29238,25 +29269,29 @@
 	    _get(Object.getPrototypeOf(Login.prototype), 'constructor', this).call(this);
 	  }
 
+	  /* 
+	   *  Event Handling
+	   */
+
 	  _createClass(Login, [{
 	    key: 'login',
 	    value: function login(e) {
 	      e.preventDefault();
-	      console.log("Login button pressed");
 
+	      /** Retrieve username and password from view **/
 	      var username = this.refs.username.value.trim();
 	      var password = this.refs.password.value.trim();
 
-	      /** DEBUG PURPOSE **/
-	      console.log(username);
-	      console.log(password);
-
-	      /** Login auth process here **/
+	      /** Invoke login in AuthService **/
 	      _servicesAuthService2['default'].login(username, password)['catch'](function (err) {
 	        alert("There's an error logging in");
 	        console.log("Error logging in", err);
 	      });
 	    }
+
+	    /*
+	     *  Render Login Form
+	     */
 	  }, {
 	    key: 'render',
 	    value: function render() {
@@ -29442,15 +29477,15 @@
 	var _AuthenticatedComponent2 = _interopRequireDefault(_AuthenticatedComponent);
 
 	exports["default"] = (0, _AuthenticatedComponent2["default"])((function (_React$Component) {
-	  _inherits(home, _React$Component);
+	  _inherits(Home, _React$Component);
 
-	  function home() {
-	    _classCallCheck(this, home);
+	  function Home() {
+	    _classCallCheck(this, Home);
 
-	    _get(Object.getPrototypeOf(home.prototype), "constructor", this).apply(this, arguments);
+	    _get(Object.getPrototypeOf(Home.prototype), "constructor", this).apply(this, arguments);
 	  }
 
-	  _createClass(home, [{
+	  _createClass(Home, [{
 	    key: "render",
 	    value: function render() {
 	      return _react2["default"].createElement(
@@ -29465,7 +29500,7 @@
 	    }
 	  }]);
 
-	  return home;
+	  return Home;
 	})(_react2["default"].Component));
 	module.exports = exports["default"];
 
@@ -29473,6 +29508,11 @@
 /* 252 */
 /***/ function(module, exports, __webpack_require__) {
 
+	/*
+	 *  Wrapper component called AuthenticatedComponent.
+	 *  It will make suere the user is authenticated before displaying its content.
+	 *  If the user isn't authenticated, it'll redirect him or her to the logi page.
+	 */
 	'use strict';
 
 	Object.defineProperty(exports, '__esModule', {
@@ -29499,15 +29539,32 @@
 
 	var _storesLoginStore2 = _interopRequireDefault(_storesLoginStore);
 
+	var _servicesRouterContainer = __webpack_require__(248);
+
+	var _servicesRouterContainer2 = _interopRequireDefault(_servicesRouterContainer);
+
 	exports['default'] = function (ComposedComponent) {
 	  return (function (_React$Component) {
 	    _inherits(AuthenticatedComponent, _React$Component);
 
-	    _createClass(AuthenticatedComponent, null, [{
-	      key: 'willTransitionTo',
-	      value: function willTransitionTo(transition) {
+	    _createClass(AuthenticatedComponent, [{
+	      key: 'componentWillMount',
+
+	      /** willTransitionTo() is deprecated **/
+	      // static willTransitionTo() {
+	      //   if (!LoginStore.isLoggedIn()) {
+	      //     var router = RouterContainer.get();
+	      //     var history = router.props.history;
+	      //     history.pushState(null, 'login');
+
+	      //   }
+	      // }
+
+	      value: function componentWillMount() {
 	        if (!_storesLoginStore2['default'].isLoggedIn()) {
-	          transition.redirect('/login', {}, { 'nextPath': transition.path });
+	          var router = _servicesRouterContainer2['default'].get();
+	          var history = router.props.history;
+	          history.pushState(null, 'login');
 	        }
 	      }
 	    }]);
@@ -29562,6 +29619,62 @@
 	};
 
 	module.exports = exports['default'];
+
+/***/ },
+/* 253 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+	var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var _react = __webpack_require__(1);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _AuthenticatedComponent = __webpack_require__(252);
+
+	var _AuthenticatedComponent2 = _interopRequireDefault(_AuthenticatedComponent);
+
+	exports["default"] = (0, _AuthenticatedComponent2["default"])((function (_React$Component) {
+	  _inherits(Userinfo, _React$Component);
+
+	  function Userinfo() {
+	    _classCallCheck(this, Userinfo);
+
+	    _get(Object.getPrototypeOf(Userinfo.prototype), "constructor", this).apply(this, arguments);
+	  }
+
+	  _createClass(Userinfo, [{
+	    key: "render",
+	    value: function render() {
+	      return _react2["default"].createElement(
+	        "h1",
+	        null,
+	        " Hello ! ",
+	        this.props.user ? this.props.user.username : "",
+	        " Here is USERINFO! ",
+	        this.props.userLoggedIn ? "logged in" : "",
+	        " "
+	      );
+	    }
+	  }]);
+
+	  return Userinfo;
+	})(_react2["default"].Component));
+	module.exports = exports["default"];
 
 /***/ }
 /******/ ]);

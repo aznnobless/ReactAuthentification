@@ -1,3 +1,10 @@
+/*
+ *  AuthService is in charge of calling login API.
+ *  The server will validate the username and password and return a JWT
+ *  back to our app. Once we get it, we'll create a LoginAction and send
+ *  it to all the Stores using the Dispatcher from Flux.
+ */
+
 import request from "reqwest";
 import when from "when";
 import {LOGIN_URL, SIGNUP_URL} from "../constants/LoginConstants"
@@ -5,6 +12,9 @@ import LoginActions from "../actions/LoginActions"
 
 class AuthService {
 
+  /*
+   *  Login Ajax call
+   */
   login(username, password) {
 
     // NOTE THIS AJAX CALL DATA IS FORM DATA
@@ -45,7 +55,7 @@ class AuthService {
       var jwt = response.id_token;
       console.log("jwt : " + jwt); // DEBUG PURPOSE
 
-      // store jwt
+      // Trigger the LoginAction with that JWT.. store jwt
       LoginActions.loginUser(jwt);
       return true;
     });

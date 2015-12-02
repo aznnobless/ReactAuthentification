@@ -27,6 +27,9 @@ class LoginStore extends BaseStore {
     };
   }
 
+  /*
+   *  Getters
+   */
   get user() {
     return this._user;
   }
